@@ -1,0 +1,90 @@
+@model Usuario
+@{
+    ViewData["Title"] = "Usuario";
+    int id = Model == null ? 0 : Model.Id;
+}
+<h4>Editar Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-6 " id ="table">    
+         <div class="col ">
+        <form asp-action="EliminarAvatar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+               <div class="form-group p-3" >
+                <input type="submit" value="ELIMINAR AVATAR" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+        <form asp-action="Editar" enctype="multipart/form-data" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+             <div class="form-group item-aligne.center">
+                <label asp-for="AvatarURL" class="control-label p-6"></label><br />
+                @if (!string.IsNullOrEmpty(Model.AvatarURL))
+                {
+                    <img src="@Model.AvatarURL" width="200px" height="200px" id="configImg" />
+                }
+                else
+                {
+                    <p>Sin avatar</p>
+                }
+            </div>
+             <div class="form-group col-6">
+                <input type="file" name="AvatarFile" />
+                <span asp-validation-for="AvatarFile" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" required />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" required />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="Correo" class="control-label"></label>
+                <input asp-for="Correo" class="form-control" required/>
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+            <div class="form-group p-3" >
+                <input type="submit" value="Guardar" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+   
+    <div class="col-6"  id ="table">
+        <h5 class="text-left">Edita tu contraseña</h5>
+        <form asp-action="CambiarContraseña" method="post" class="row g-3">
+             <input type="hidden" name="id" value="@Model.Id" />
+            <div class="form-group col-6" >
+                <label asp-for="Clave" class="control-label"></label>
+                <input asp-for="Clave" class="form-control" required/>
+                @if (Model.Id == 0) // Si el ID es 0, es una creación, no una edición
+                    {
+                    <span class="text-danger">* Este campo es obligatorio para nuevos usuarios</span>
+                }
+            </div>
+            @if (User.IsInRole("Administrador"))
+            {
+                <div class="form-group">
+                    <label class="control-label">Rol</label>
+                    <select class="form-control" name="Rol" id="selectedUsuarios">
+                        @foreach (var item in (IList<Rol>)ViewBag.Roles)
+                        {
+                            @:<option @(item.Numero == Model?.Rol ? "selected" : "") value="@item.Numero"> @item.rol </option>
+                        }
+                    </select>
+                    <span asp-validation-for="Rol" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Cambiar" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+<div>
+    <a asp-action="Index">volver al listado anterior</a>
+</div>

@@ -1,0 +1,116 @@
+@model PROYECTO_BRUNO_SOAZO.Models.Contrato;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<div class="container justify-content-center  col-6 p-3" id="table" >
+    <h4 class="text-center">Liquidacion por finalización</h4>
+    <hr />
+    <dl class="row ">
+        <dt class="col-6 ">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        
+        <dt class="col-6 ">
+            @Html.DisplayNameFor(model => model.MontoMensual)
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.MontoMensual)
+        </dd>
+         <dt class="col-6 ">
+          FECHA DE TERMINO DEL CONTRATO
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.FechaTerm)
+        </dd>
+       <div class="col-10 " id ="table">    
+         <div class="col ">
+        <form asp-action="Calcular">
+              <div class="form-group col-8">
+                <label asp-for="FechaFinalizacion" class="control-label"></label>
+                <input asp-for="FechaFinalizacion" class="form-control" id="fechaInicio" required/>
+                <span asp-validation-for="FechaFinalizacion" class="text-danger"></span>
+            </div>
+            <input type="hidden" name="id" value="@Model.Id" />
+               <div class="form-group p-5" >
+                <input type="submit" value="Calcular Multa" class="btn btn-warning" />
+            </div>
+        </form>
+        
+        <dd class="col-6">
+                    @if (ViewBag.Deuda < 0 || ViewBag.Deuda == null)
+                    {
+                        @if (ViewBag.Multa != null)
+                        {
+                            <h5>MULTA CORRESPONDIENTE</h5>
+                            <h5>$ @ViewBag.Multa</h5>
+                            <a asp-controller="Pago" asp-action="agregarpago" asp-route-id="@Model.Id" title="Agregar pago"><i
+                                    class="fa fa-plus" style="font-size:25px;" id="agregar"></i> Pagar Multa</a>
+                        }
+                        @if(ViewBag.CalculoValidado == true){
+                             <div>
+                                <form asp-action="Finalizar">
+                                    <input type="hidden" name="FechaFinalizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" disabled />
+                                    <input type="hidden" name="id" value="@Model.Id" />
+                                    <div class="form-group p-5">
+                                        <input type="submit" value="Finalizar contrato" class="btn btn-success
+                                        " />
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>El contrato posee @ViewBag.Deuda meses de deuda, no puede cancelar el contrato</p>
+                    }
+        </dd>
+    </div>
+
+        @if (ViewBag.UserRole == "ADMINISTRADOR")
+        {
+            <dt class="col-6">
+                CREADO POR
+            </dt>
+            <dd class="col-6">
+               @ViewBag.UsuarioC.Id @ViewBag.UsuarioC.Nombre @ViewBag.UsuarioC.Apellido
+            </dd>
+            @if (Model.IdUsuarioTermino != null && Model.Anulado)
+            {
+                <dt class="col-6">
+                    ANULADO
+                </dt>
+                <dd class="col-6">
+                    SI
+                </dd>
+                <dt class="col-6">
+                    TERMINADO POR
+                </dt>
+                <dd class="col-6">
+                    @ViewBag.UsuarioT.Id @ViewBag.UsuarioT.Nombre @ViewBag.UsuarioT.Apellido
+                </dd>
+            }
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Volver al listado</a>
+</div>
+<script>
+    // Obtener la fecha de hoy
+    const hoy = new Date();
+    // Formatear la fecha en el formato YYYY-MM-DD
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Sumar 1 porque getMonth() devuelve un índice de 0 a 11
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const fechaFormateada = `${anio}-${mes}-${dia}`;
+
+    // Establecer la fecha en el campo de entrada
+    document.getElementById('fechaInicio').value = fechaFormateada;
+</script>

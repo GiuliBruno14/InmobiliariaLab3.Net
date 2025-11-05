@@ -1,0 +1,165 @@
+@model Contrato
+@{
+    ViewData["Title"] = "Inmueble";
+    int id = Model == null? 0: Model.Id;
+    var inmueblesJson = ViewBag.InmueblesJson;
+    var contratosJson = ViewBag.ContratosJson;
+}
+
+
+<div class="container text-aligne-center">
+    <h4>Contrato</h4>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-6">
+         <form asp-action="Guardar" class="row g-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-2">
+                <label  class="control-label">CÓDIGO</label>
+                <input name="Id" class="form-control"  value="@id" readonly/>             
+            </div>
+            <div class="form-group col-5">
+                <label asp-for="FechaInicio" class="control-label"></label>
+                <input asp-for="FechaInicio" class="form-control" id="fechaInicio" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group col-5">
+                <label asp-for="FechaTerm" class="control-label"></label>
+                <input asp-for="FechaTerm" class="form-control" id="fechaTerm" />
+                <span asp-validation-for="FechaTerm" class="text-danger"></span>
+            </div>
+            <div class="form-group col-4">
+                <label asp-for="MontoMensual" class="control-label"></label>
+                <input asp-for="MontoMensual" class="form-control" />
+                <span asp-validation-for="MontoMensual" class="text-danger"></span>
+            </div>
+            <div class="form-group col-4">
+                <label asp-for="IdInquilino" class="control-label"></label>
+                <select class="form-control"  name="IdInquilino" id = "selectInquilinos">
+                    @foreach (var item in (IList<Inquilino>)ViewBag.Inquilinos)
+                    {
+                        @:<option @(item.Id == Model?.IdInquilino ? "selected" : "") value="@item.Id">@item.Apellido @item.Nombre</option>
+                    }
+                </select>
+            </div>
+        <div class="form-group  col-4">
+                <label asp-for="IdInmueble" class="control-label"></label>
+                <select class="form-control"  name="IdInmueble" id = "selectInmuebles">
+                    
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+    <a asp-action="Index">Volver al listado</a>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/select2/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#selectInquilinos').select2();
+        $('#selectInmuebles').select2();
+        var inmuebles = @Html.Raw(inmueblesJson);
+        var contratos = @Html.Raw(contratosJson);
+
+        function actualizarInmuebles() {
+            var fechaInicio = $('#fechaInicio').val();
+            var fechaTerm = $('#fechaTerm').val();
+            var contratoId = '@(Model?.Id ?? 0)';  // ID del contrato actual (cero si no hay contrato)
+            var inmuebleSeleccionadoId = '@(Model?.IdInmueble ?? 0)'; // ID del inmueble seleccionado (cero si no hay inmueble)
+
+            var fechaInicioDate = fechaInicio ? new Date(fechaInicio) : null;
+            var fechaTermDate = fechaTerm ? new Date(fechaTerm) : null;
+
+            var inmueblesFiltrados = inmuebles.filter(function (inmueble) {
+                // Convertir IDs a números para asegurar una comparación precisa
+                var inmuebleId = Number(inmueble.Id);
+                var inmuebleSeleccionado = Number(inmuebleSeleccionadoId);
+
+                // Siempre incluir el inmueble seleccionado si estamos editando o renovando
+                if (inmuebleId === inmuebleSeleccionado) {
+                    return true;
+                }
+
+                // Filtrar por disponibilidad
+                if (inmueble.Disponible === 'NO') {
+                    return false;
+                }
+
+                if (contratos.length === 0) {
+                    return true; // Si no hay contratos, todos los inmuebles están disponibles
+                }
+
+                // Filtrar por fechas de ocupación
+                if (fechaInicioDate && fechaTermDate) {
+                    return !contratos.some(function (contrato) {
+                        var fechaInicioOcupado = new Date(contrato.FechaInicio);
+                        var fechaTermOcupado = new Date(contrato.FechaTerm);
+
+                        // Excluir inmuebles que están ocupados y cuyos contratos NO estén anulados
+                        return (
+                            contrato.IdInmueble === inmuebleId &&
+                            !contrato.Anulado &&  // Excluir contratos no anulados
+                            (
+                                (fechaInicioDate >= fechaInicioOcupado && fechaInicioDate <= fechaTermOcupado) ||
+                                (fechaTermDate >= fechaInicioOcupado && fechaTermDate <= fechaTermOcupado) ||
+                                (fechaInicioDate <= fechaInicioOcupado && fechaTermDate >= fechaTermOcupado)
+                            )
+                        );
+                    });
+                }
+
+                return true; // Si no hay fechas, el inmueble es elegible
+            });
+
+            var $selectInmuebles = $('#selectInmuebles');
+            $selectInmuebles.empty();
+
+            if (inmueblesFiltrados.length > 0) {
+                inmueblesFiltrados.forEach(function (inmueble) {
+                    var isSelected = inmueble.Id === Number(inmuebleSeleccionadoId) ? "selected" : "";
+                    $selectInmuebles.append('<option value="' + inmueble.Id + '" ' + isSelected + '>' + inmueble.Id + ' - ' + inmueble.Direccion + '</option>');
+                });
+
+                // Seleccionar el inmueble actual en el modo de edición/renovación
+                if (inmuebleSeleccionadoId > 0) {
+                    $selectInmuebles.val(inmuebleSeleccionadoId).trigger('change');
+                }
+            } else {
+                $selectInmuebles.append('<option value="">No hay inmuebles disponibles</option>');
+            }
+        }
+
+        // Inicializar la lista de inmuebles
+        actualizarInmuebles();
+
+        // Actualizar la lista cuando cambien las fechas
+        $('#fechaInicio, #fechaTerm').on('change', function () {
+            actualizarInmuebles();
+        });
+    });
+</script>
+<script>
+    // Obtener la fecha de hoy
+    const hoy = new Date();
+    // Formatear la fecha en el formato YYYY-MM-DD
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Sumar 1 porque getMonth() devuelve un índice de 0 a 11
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const fechaFormateada = `${anio}-${mes}-${dia}`;
+
+    // Establecer la fecha en el campo de entrada
+    document.getElementById('fechaInicio').value = fechaFormateada;
+     document.getElementById('fechaTerm').value = fechaFormateada;
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

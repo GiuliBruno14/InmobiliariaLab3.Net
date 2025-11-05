@@ -1,0 +1,102 @@
+@model IEnumerable<Propietario>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4> Listado  de Propietarios</h4>
+
+<p>
+    <a asp-action="Editar"method = "post">CREAR NUEVO PROPIETARIO</a>
+</p>
+<form asp-action="BuscarPropietario" method="get">
+    <p>
+        Buscar propietario: <input type="text" name="buscar" class="form-text" />
+        <input type="submit" value="Buscar" class="btn btn-dark" />
+    </p>
+</form>
+<table class="table" id="table">
+    <thead> 
+        <tr>
+            <th >
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+             <th>
+               ACCIONES
+            </th>
+        </tr>
+    </thead>
+    <tbody id="table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+              
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                
+               
+                <td>
+                    <a asp-action="Detalles" asp-route-id=@item.Id title="Ver Detalles"><i class="fa fa-eye " style="font-size:25px;" id="detalles"></i></a>
+                    <a asp-action="Editar" asp-route-id=@item.Id title="Editar item"><i class="fa fa-pencil " style="font-size:25px;" id="edi" ></i></a>
+                    @if (ViewBag.UserRole == "ADMINISTRADOR")
+                    {
+                        <a href="#" onclick="eliminar('@item.Id', '@item.Nombre')" title="Eliminar">
+                            <i class="fa fa-trash" style="font-size:25px;" id="eli"></i>
+                        </a>
+                    }
+                  
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form class="modal" tabindex="-1" asp-action="Eliminar" id="modal_eliminar_propietario">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">DESEAS ELIMINAR A:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="Id" value="" id ="propietario_eliminar_id">
+        <p><span id="propietario_eliminar_nombre"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+      </div>
+    </div>
+  </div>
+</form>
+@section Scripts{
+    <script>
+        function eliminar(id, nombre){
+            document.querySelector("#propietario_eliminar_id").value = id;
+            document.querySelector("#propietario_eliminar_nombre").innerHTML = nombre;
+            $("#modal_eliminar_propietario").modal("show");
+        }
+    </script>
+}

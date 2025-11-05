@@ -1,0 +1,103 @@
+@model Pago
+@{
+    ViewData["Title"] = "Pago";
+    int id = Model == null ? 0 : Model.Id;
+}
+
+
+<div class="container text-aligne-center">
+    <h4>Pago</h4>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-6">
+        <form asp-action="Guardar" class="row g-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-2">
+                <label class="control-label">CÓDIGO</label>
+                <input name="Id" class="form-control" value="@id" readonly />
+            </div>
+             <div class="form-group col-3">
+                <label asp-for="IdContrato" class="control-label"></label>
+                @if (Model != null && Model.IdContrato > 0)
+                {
+                    <!-- Mostrar el IdContrato como solo lectura si ya está asignado -->
+                    <input asp-for="IdContrato" class="form-control" readonly value="@Model.IdContrato" />
+                }
+                else
+                {
+                    <!-- Mostrar el select si no hay un IdContrato asignado -->
+                    <select class="form-control" name="IdContrato" id="selectContratos">
+                        @foreach (var item in (IList<Contrato>)ViewBag.Contratos)
+                        {
+                            <option value="@item.Id"> @item.Id</option>
+                        }
+                    </select>
+                }
+            </div>
+            <div class="form-group col-3">
+                <label asp-for="Fecha" class="control-label"></label>
+                @if(id > 0){
+                    <input asp-for="Fecha" class="form-control" readonly />
+                } else {
+                    <input asp-for="Fecha" class="form-control" />
+                }
+                <span asp-validation-for="Fecha" class="text-danger"></span>
+            </div>
+          <div class="form-group col-5">
+                <label asp-for="Referencia" class="control-label"></label>
+                <select class="form-control" name="Referencia" id= "">
+                    @foreach (var item in (List<string>)ViewBag.Referencia)
+                    {
+                        @:<option @(item== Model?.Referencia ? "selected" : "") value="@item"> @item</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-3">
+                <label asp-for="Importe" class="control-label"></label>
+                @if (id > 0 ){
+                    <input asp-for="Importe" class="form-control" readonly>
+                } else {
+                    <input asp-for="Importe" class="form-control">
+                }
+                <span asp-validation-for="Importe" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<a asp-action="Index">Volver al listado</a>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/select2/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#selectContratos').select2();
+    });
+</script>
+
+<script>
+    // Obtener la fecha de hoy
+    const hoy = new Date();
+    // Formatear la fecha en el formato YYYY-MM-DD
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Sumar 1 porque getMonth() devuelve un índice de 0 a 11
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    const fechaFormateada = `${anio}-${mes}-${dia}`;
+
+    // Establecer la fecha en el campo de entrada
+    document.getElementById('fechaInicio').value = fechaFormateada;
+     document.getElementById('fechaTerm').value = fechaFormateada;
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,109 @@
+@model IEnumerable<Contrato>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4> Listado  de contratos</h4>
+
+<p>
+    <a asp-action="Editar"method = "post">CREAR NUEVO </a>
+</p>
+<p>
+    <a asp-action="VerVigentes">Ver contratos vigentes</a>
+</p>
+<form asp-action="Index">
+    <p>
+        Buscar: <input type="text" name="buscar" class="form-text" />
+        <input type="submit" value="buscar" class="btn btn-dark" >
+    </p>
+</form>
+<table class="table" id="table">
+      <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaTerm)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Arrendatario)
+            </th>
+            <th>
+                ACCIONES
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody id="table">
+        @foreach (var item in Model)
+        {
+            <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaTerm)
+            </td>
+            <td>
+                @(item.Arrendatario.Nombre + " " + item.Arrendatario.Apellido)
+            </td>
+            <td>
+                <a asp-action="Detalles" asp-route-id=@item.Id title="Ver Detalles"><i class="fa fa-eye " style="font-size:25px;" id="detalles"></i></a>
+                <a asp-action="Editar" asp-route-id=@item.Id title="Editar item"><i class="fa fa-pencil " style="font-size:25px;" id="edi"></i></a>
+                @if (ViewBag.UserRole == "ADMINISTRADOR")
+                    {
+                        <a href="#" onclick="eliminar('@item.Id')" title="Eliminar">
+                            <i class="fa fa-trash" style="font-size:25px;" id="eli"></i>
+                        </a>
+                    }
+                <a asp-controller="Pago" asp-action="agregarpago" asp-route-id="@item.Id" title="Agregar pago"><i class="fa fa-plus" style="font-size:25px;" id="agregar"></i></a>
+                <a asp-controller="Pago" asp-action="PagosContrato" asp-route-id="@item.Id" title="Listar Pagos"><i class="fa fa-bars" style="font-size:25px;" id="pagosC"></i></a>
+                <a asp-action="Renovar" asp-route-id=@item.Id title="Renovar contrato"><i class="fa fa-rotate-right" style="font-size:25px;" id="ren"></i></a>
+                <a asp-action="FinalizarContrato" asp-route-id="@item.Id" title="Finalizar contrato"><img src="../ImgSubidas/finally.png" height="25px" width="25px" alt="Finalizar contrato"></a>
+            </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form class="modal" tabindex="-1" asp-action="Eliminar" id="modal_eliminar_Contrato">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Deseas eliminar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="Id" value="" id="Contrato_eliminar_id">
+        <p><span id="Contrato_eliminar_nombre"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function eliminar(id){
+            document.querySelector("#Contrato_eliminar_id").value = id;
+            document.querySelector("#Contrato_eliminar_nombre").innerHTML = id;
+            $("#modal_eliminar_Contrato").modal("show");
+        }
+    </script>
+}

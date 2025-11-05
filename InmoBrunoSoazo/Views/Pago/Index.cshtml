@@ -1,0 +1,112 @@
+@model IEnumerable<Pago>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4> Listado de pagos</h4>
+
+<p>
+    <a asp-action="Editar" method="post">CREAR NUEVO </a>
+</p>
+<form asp-action="Index">
+    <p>
+        Buscar: <input type="text" name="buscar" class="form-text" />
+        <input type="submit" value="buscar" class="btn btn-dark">
+    </p>
+</form>
+<table class="table" id="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Referencia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Importe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Anulado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdContrato)
+            </th>
+            <th>
+                ACCIONES
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(model => item.Id)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.Fecha)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.Referencia)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.Importe)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.Anulado)
+                </th>
+                <th>
+                    @Html.DisplayFor(model => item.IdContrato)
+                </th>
+                <td>
+                    <a asp-action="Detalles" asp-route-id=@item.Id title="Ver Detalle"><i class="fa fa-eye " style="font-size:25px;"
+                            id="detalles"></i></a>
+                    <a asp-action="Editar" asp-route-id=@item.Id title="Editar"><i class="fa fa-pencil " style="font-size:25px;"
+                            id="edi"></i></a>
+                    @if (ViewBag.UserRole == "ADMINISTRADOR")
+                    {
+                        <a href="#" onclick="eliminar('@item.Id')" title="Anular">
+                            <i class="fa fa-trash" style="font-size:25px;" id="eli"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form class="modal" tabindex="-1" asp-action="Eliminar" id="modal_eliminar_Pago">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">DESEAS ANULAR A:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="Id" value="" id="Pago_eliminar_id">
+                <p><span id="Pago_eliminar_id"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger">Anular</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function eliminar(id) {
+            document.querySelector("#Pago_eliminar_id").value = id;
+            document.querySelector("#Pago_eliminar_id").innerHTML = id;
+            $("#modal_eliminar_Pago").modal("show");
+        }
+    </script>
+}

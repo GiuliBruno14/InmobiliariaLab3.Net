@@ -1,0 +1,74 @@
+@model Usuario
+@{
+    ViewData["Title"] = "Usuario";
+    int id = Model == null? 0: Model.Id;
+}
+
+
+<div class="container text-aligne-center">
+    <h4>Usuario</h4>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-6">
+        <form asp-action="Guardar" method = "post" class="row g-3" enctype= "multipart/form-data" >
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+             <div class="form-group col-6">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" required />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" required />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group col-4">
+                <label asp-for="Correo" class="control-label"></label>
+                <input asp-for="Correo" class="form-control" required />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+             <div class="form-group col-4">
+                <label asp-for="Clave" class="control-label"></label>
+                <input asp-for="Clave" class="form-control"  required />
+            </div>
+             <div class="form-group col-4">
+                <label asp-for="Rol" class="control-label"></label>
+                <select class="form-control" name="Rol" id= "selectedUsuarios">
+                    @foreach (var item in (IList<Rol>)ViewBag.Roles)
+                    {
+                        @:<option @(item.Numero == Model?.Rol ? "selected" : "") value="@item.Numero"> @item.rol </option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+				<label asp-for="AvatarFile" class="control-label"></label>
+				<input type="file" name="AvatarFile" />
+				<span asp-validation-for="AvatarFile" class="text-danger"></span>
+			</div>
+           
+            <div class="form-group p-3">
+                <input type="submit" value="Guardar" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+    <a asp-action="Index">Volver al listado</a>
+</div>
+
+<script src="path/to/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#selectedUsuarios').select2();
+});
+</script>
+
+
+<!--
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+-->

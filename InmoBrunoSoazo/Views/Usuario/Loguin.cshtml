@@ -1,0 +1,41 @@
+@model Log;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="row mt-5">
+        <div class=" col-sm-4 offset-sm-4">
+            <form asp-action="Loguin" asp-controller="Usuario" method="post">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email</label>
+                    <input type="email" class="form-control" asp-for="Usuario" required>
+                    
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" asp-for="Clave" required>
+                    
+                </div>
+                @if(ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger col-12"  >
+                        @ViewBag.Error
+                    </div>
+                }
+                <button type="submit" class="btn btn-success">Ingresar</button>
+            </form>
+        </div>
+
+    </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

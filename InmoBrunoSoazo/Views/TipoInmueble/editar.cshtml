@@ -1,0 +1,42 @@
+@model TipoInmueble
+@{
+    ViewData["Title"] = "Inmueble";
+    string tipo = Model == null? null: Model.Tipo;
+}
+
+
+<div class="container text-aligne-center">
+    <h4>Tipo Inmueble</h4>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-8">
+        <form asp-action="Guardar" method="post" class="row g-3">
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-4">
+                <label class="control-label">TIPO DE INMUEBLE </label>
+                <input name="Tipo" class="form-control" value="@tipo"  id="selectedPropietarios"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+    <a asp-action="Index">Volver al listado</a>
+</div>
+
+<script src="path/to/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#selectPropietarios').select2();
+});
+</script>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

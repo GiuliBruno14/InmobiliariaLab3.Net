@@ -1,0 +1,132 @@
+@model Inmueble
+@{
+    ViewData["Title"] = "Inmueble";
+    int id = Model == null? 0: Model.Id;
+}
+
+
+<div class="container text-aligne-center">
+    <h4>Inmueble</h4>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-8">
+        <form asp-action="Guardar" method="post" class="row g-3">
+             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-2">
+                <label class="control-label">CÓDIGO</label>
+                <input name="Id" class="form-control" value="@id" readonly />
+            </div>
+            <div class="form-group col-4">
+                <label asp-for="PropietarioId" class="control-label"></label>
+                <select class="form-control" name="PropietarioId" id= "selectPropietarios">
+                    @foreach (var item in (IList<Propietario>)ViewBag.Propietarios)
+                    {
+                        @:<option @(item.Id == Model?.PropietarioId ? "selected" : "") value="@item.Id"> @item.Apellido @item.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-6">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+            <div class="form-group col-3">
+                <label asp-for="Tipo" class="control-label"></label>
+                <select class="form-control" name="Tipo" id= "selectPropietarios">
+                    @foreach (var item in (IList<TipoInmueble>)ViewBag.TipoInmuebles)
+                    {
+                        @:<option @(item.Tipo == Model?.Tipo ? "selected" : "") value="@item.Tipo"> @item.Tipo</option>
+                    }
+                </select>
+            </div>
+             <div class="form-group col-3">
+                <label asp-for="Uso" class="control-label"></label>
+                <select class="form-control" asp-for="Uso">
+                    @if (Model != null)
+                    {
+                        if (Model.Disponible == "COMERCIAL")
+                        {
+                            <option value="COMERCIAL" selected>COMERCIAL</option>
+                            <option value="HABITACIONAL">HABITACIONAL</option>
+                        }
+                        else
+                        {
+                          <option value="HABITACIONAL" selected>HABITACIONAL</option>
+                          <option value="COMERCIAL" >COMERCIAL</option>
+                        }
+                    }
+                    else
+                    {   <option value="">Selecciona aqui </option>
+                        <option value="HABITACIONAL">HABITACIONAL</option>
+                        <option value="COMERCIAL" >COMERCIAL</option>
+                     }
+                 </select>
+            </div>
+            <div class="form-group col-3">
+                <label asp-for="Ambientes" class="control-label"></label>
+                <input asp-for="Ambientes" class="form-control" />
+                <span asp-validation-for="Ambientes" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group col-3">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+             <div class="form-group col-4">
+                <label asp-for="Latitud" class="control-label"></label>
+                <input asp-for="Latitud" class="form-control" />
+                <span asp-validation-for="Latitud" class="text-danger"></span>
+            </div>
+             <div class="form-group col-4">
+                <label asp-for="Longitud" class="control-label"></label>
+                <input asp-for="Longitud" class="form-control" />
+                <span asp-validation-for="Longitud" class="text-danger"></span>
+            </div>
+            <div class="form-group col-4">
+                <label asp-for="Disponible" class="control-label"></label>
+                <select class="form-control" asp-for="Disponible">
+                    @if (Model != null)
+                    {
+                        if (Model.Disponible == "SI")
+                        {
+                            <option value="SI" selected>SI</option>
+                            <option value="NO">NO</option>
+                        }
+                        else
+                        {
+                          <option value="NO" selected>No</option>
+                          <option value="SI" >SI</option>
+                        }
+                    }
+                    else
+                    {   <option value="">Selecciona aqui </option>
+                        <option value="SI">SI</option>
+                        <option value="NO">NO</option>
+                     }
+                 </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+    <a asp-action="Index">Volver al listado</a>
+</div>
+
+<script src="~/lib/select2/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#selectPropietarios').select2();
+});
+</script>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

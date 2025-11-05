@@ -1,0 +1,53 @@
+@model Usuario;
+
+@{
+    ViewData["Title"] = "Detalle";
+}
+
+
+
+<div class="container justify-content-center  col-6"  id ="table">
+    <h4 class="text-center">Detalles del Usuario</h4>
+    <hr />
+     <dl class="row ">
+        <dt class = "col-6 " >
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Apellido)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Apellido)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Correo)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Correo)
+        </dd>
+        <dt class = "col-6 ">
+           ROL
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Datos.rol)
+        </dd>
+        <dt class = "col-6 ">
+            AVATAR
+        </dt>
+        <dd class = "col-6">
+          <img width="40"  height="40" src="@Model.AvatarURL" alt="Avatar" id="configImg"/>
+        </dd>   
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Volver al listado</a>
+</div>

@@ -1,0 +1,59 @@
+@model PROYECTO_BRUNO_SOAZO.Models.Inquilino;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<div class="container justify-content-center  col-6"  id ="table">
+    <h4 class="text-center">Detalles del Inquilino</h4>
+    <hr />
+    <dl class="row ">
+        <dt class = "col-6 " >
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Apellido)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Apellido)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Dni)
+        </dt>
+        <dd class = "col-6 ">
+            @Html.DisplayFor(model => model.Dni)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd class = "col-6">
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt class = "col-6">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-6">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = "col-6 ">
+            @Html.DisplayNameFor(model => model.Domicilio)
+        </dt>
+        <dd class = "col-6">
+            @Html.DisplayFor(model => model.Domicilio)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Volver al listado</a>
+</div>

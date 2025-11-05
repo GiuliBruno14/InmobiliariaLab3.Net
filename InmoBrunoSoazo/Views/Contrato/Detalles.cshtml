@@ -1,0 +1,78 @@
+@model PROYECTO_BRUNO_SOAZO.Models.Contrato;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<div class="container justify-content-center  col-6" id="table">
+    <h4 class="text-center">Detalles del Contrato</h4>
+    <hr />
+    <dl class="row ">
+        <dt class="col-6 ">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-6 ">
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt class="col-6 ">
+            @Html.DisplayNameFor(model => model.FechaTerm)
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.FechaTerm)
+        </dd>
+        <dt class="col-6 ">
+            @Html.DisplayNameFor(model => model.MontoMensual)
+        </dt>
+        <dd class="col-6 ">
+            @Html.DisplayFor(model => model.MontoMensual)
+        </dd>
+        <dt class="col-6 ">
+            DATOS DEL INQUILINO
+        </dt>
+        <dd class="col-6">
+            CODIGO @Model.IdInquilino, @Model.Arrendatario.Apellido @Model.Arrendatario.Nombre
+        </dd>
+        <dt class="col-6">
+            DATOS DEL INMUEBLE
+        </dt>
+        <dd class="col-6">
+            CODIGO @Model.IdInmueble, @Model.Datos.Direccion @Model.Datos.Uso
+        </dd>
+        @if (ViewBag.UserRole == "ADMINISTRADOR")
+        {
+            <dt class="col-6">
+                CREADO POR
+            </dt>
+            <dd class="col-6">
+               @ViewBag.UsuarioC.Id @ViewBag.UsuarioC.Nombre @ViewBag.UsuarioC.Apellido
+            </dd>
+            @if (Model.IdUsuarioTermino != null && Model.Anulado)
+            {
+                <dt class="col-6">
+                    ANULADO
+                </dt>
+                <dd class="col-6">
+                    SI
+                </dd>
+                <dt class="col-6">
+                    TERMINADO POR
+                </dt>
+                <dd class="col-6">
+                    @ViewBag.UsuarioT.Id @ViewBag.UsuarioT.Nombre @ViewBag.UsuarioT.Apellido
+                </dd>
+                
+            }
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Volver al listado</a>
+</div>
