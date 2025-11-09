@@ -46,7 +46,6 @@ namespace PROYECTO_BRUNO_SOAZO.Api
                 {
                     return NotFound("No se encontraron inmuebles para este propietario");
                 }
-                _logger.LogInformation("Se encontraron " + inmuebles.Count() + " inmuebles");
                 return Ok(inmuebles);
             }
             catch (Exception ex)
@@ -116,7 +115,6 @@ namespace PROYECTO_BRUNO_SOAZO.Api
                     return Unauthorized("Propietario no encontrado.");
 
                 inmuebleObj.PropietarioId = propietario.Id;
-                _logger.LogInformation($"Propietario del inmueble: {inmuebleObj.PropietarioId}");
 
                 // Crear carpeta si no existe
                 var uploads = Path.Combine(
@@ -143,8 +141,6 @@ namespace PROYECTO_BRUNO_SOAZO.Api
                 // Guardar en base de datos
                 var repo = new RepositorioInmueble();
                 repo.AltaInmueble(inmuebleObj);
-
-                _logger.LogInformation("Inmueble creado correctamente.");
                 return Ok(inmuebleObj);
             }
             catch (Exception ex)
@@ -161,7 +157,6 @@ namespace PROYECTO_BRUNO_SOAZO.Api
             {
                 var repo = new RepositorioTipoInmueble();
                 var tipos = repo.ObtenerTipos(); // Devuelve List<Tipo>
-                _logger.LogInformation("Tipos obtenidos correctamente");
                 return Ok(tipos);
             }
             catch (Exception ex)
@@ -172,18 +167,14 @@ namespace PROYECTO_BRUNO_SOAZO.Api
 
         private Propietario? ObtenerPropietario()
         {
-            _logger.LogInformation("Obteniendo el perfil del propietario");
             var usuarioIdClaim = User.FindFirst("Id")?.Value; //Obtener el id del usuario mediante el token
-            _logger.LogInformation("El id claim del usuario es: " + usuarioIdClaim);
             if (string.IsNullOrEmpty(usuarioIdClaim))
             {
                 return null;
             }
             int usuarioId = int.Parse(usuarioIdClaim);
-            _logger.LogInformation("El id del usuario es: " + usuarioId);
             RepositorioPropietario repoP = new RepositorioPropietario();
             var propietario = repoP.getPropietarioIdUsuario(usuarioId);
-            _logger.LogInformation("El propietario es: " + propietario);
             return propietario;
         }
 
@@ -198,9 +189,7 @@ namespace PROYECTO_BRUNO_SOAZO.Api
                     return NotFound("Propietario no encontrado");
 
                 RepositorioInmueble ri = new RepositorioInmueble();
-                _logger.LogInformation("Obteniendo los contratos vigentes");
                 var inmuebles = ri.ObtenerInmueblesConContratoVigente(propietario.Id);
-                _logger.LogInformation("Contratos obtenidos");
 
                 if (inmuebles == null || !inmuebles.Any())
                     return NotFound("No se encontraron inmuebles con contrato vigente");

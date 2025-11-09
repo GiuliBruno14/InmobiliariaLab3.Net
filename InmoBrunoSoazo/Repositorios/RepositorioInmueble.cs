@@ -64,14 +64,12 @@ public class RepositorioInmueble
         int id = 0;
         using (var connection = new MySqlConnection(ConnectionString))
         {
-            // 1. LA SQL *SIN* EL "SELECT LAST_INSERT_ID();"
             var sql =
                 @$"INSERT INTO inmuebles ({nameof(Inmueble.Direccion)}, {nameof(Inmueble.Ambientes)}, {nameof(Inmueble.Uso)},  {nameof(Inmueble.Precio)}, {nameof(Inmueble.Disponible)}, {nameof(Inmueble.PropietarioId)}, {nameof(Inmueble.Latitud)}, {nameof(Inmueble.Longitud)}, {nameof(Inmueble.Tipo)}, {nameof(Inmueble.Imagen)})
                 VALUES (@{nameof(Inmueble.Direccion)}, @{nameof(Inmueble.Ambientes)}, @{nameof(Inmueble.Uso)},  @{nameof(Inmueble.Precio)}, @{nameof(Inmueble.Disponible)}, @{nameof(Inmueble.PropietarioId)}, @{nameof(Inmueble.Latitud)}, @{nameof(Inmueble.Longitud)}, @{nameof(Inmueble.Tipo)}, @{nameof(Inmueble.Imagen)});";
 
             using (var command = new MySqlCommand(sql, connection))
             {
-                // (Todos tus 'AddWithValue' están perfectos)
                 command.Parameters.AddWithValue(
                     $"@{nameof(Inmueble.Direccion)}",
                     inmueble.Direccion
@@ -97,9 +95,8 @@ public class RepositorioInmueble
 
                 connection.Open();
 
-                // 2. CAMBIAR 'ExecuteScalar' POR ESTAS DOS LÍNEAS
-                command.ExecuteNonQuery(); // Ejecuta el INSERT
-                id = Convert.ToInt32(command.LastInsertedId); // Obtené el ID
+                command.ExecuteNonQuery();
+                id = Convert.ToInt32(command.LastInsertedId); 
 
                 inmueble.Id = id;
                 connection.Close();
